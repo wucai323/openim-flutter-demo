@@ -19,7 +19,10 @@ jobs:
         run: flutter config --enable-windows-desktop
 
       - name: Init Windows platform
-        run: flutter create --platforms=windows . || exit 0
+        shell: pwsh
+        run: |
+          flutter create --platforms=windows .
+          if ($LASTEXITCODE -ne 0) { exit 0 }
 
       - run: flutter pub get
       - run: flutter build windows --release
