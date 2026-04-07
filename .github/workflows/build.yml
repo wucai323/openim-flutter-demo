@@ -18,6 +18,9 @@ jobs:
       - name: Enable Windows desktop
         run: flutter config --enable-windows-desktop
 
+      - name: Init Windows platform
+        run: flutter create --platforms=windows . || exit 0
+
       - run: flutter pub get
       - run: flutter build windows --release
 
