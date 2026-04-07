@@ -43,7 +43,9 @@ jobs:
       - name: Enable macOS desktop
         run: flutter config --enable-macos-desktop
 
-      - run: flutter create --platforms=macos .
+      - name: Init macOS platform
+        run: flutter create --platforms=macos . || true
+
       - run: flutter pub get
       - run: flutter build macos --release
 
