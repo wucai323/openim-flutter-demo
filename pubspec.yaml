@@ -75,8 +75,6 @@ dependencies:
   focus_detector_v2: ^3.1.0+1
   persistent_bottom_nav_bar_v2: ^5.3.1
   flutter_openim_sdk: ^3.8.3+hotfix.12
-  livekit_client: ^2.7.0
-  flutter_webrtc: ^1.4.0
   openim_common:
     path: openim_common
   openim_live:
