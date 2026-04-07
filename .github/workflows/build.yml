@@ -1,56 +1,56 @@
 name: Build Desktop
 
-  on:
-    push:
-      branches: [ main, master ]
-    workflow_dispatch:                                                                         
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:                                                                         
    
-  jobs:                                                                                        
-    build-windows:
-      runs-on: windows-latest
-      steps:
-        - uses: actions/checkout@v4
-        - uses: subosito/flutter-action@v2
-          with:
-            flutter-version: "3.27.4"                                                          
-            channel: stable                                                                    
-        - name: Fix dependencies                                                               
-          shell: pwsh                                                                          
-          run: |  
-            (Get-Content pubspec.yaml) -replace 'flutter_lints: \^6.0.0', 'flutter_lints: 
-  ^5.0.0' | Set-Content pubspec.yaml                                                           
+jobs:                                                                                        
+  build-windows:
+    runs-on: windows-latest
+      teps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.27.4"                                                          
+           channel: stable                                                                    
+      - name: Fix dependencies                                                               
+        shell: pwsh                                                                          
+        run: |  
+          (Get-Content pubspec.yaml) -replace 'flutter_lints: \^6.0.0', 'flutter_lints: 
+^5.0.0' | Set-Content pubspec.yaml                                                           
             (Get-Content pubspec.yaml) -replace 'build_runner: \^2.4.15', 'build_runner: 
-  ^2.4.13' | Set-Content pubspec.yaml                                                          
-        - run: flutter pub get
-        - run: flutter build windows --release                                                 
-        - name: Package                                                                        
-          shell: pwsh                                                                          
-          run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath      
-  OpenIM-Windows.zip                                                                           
-        - uses: actions/upload-artifact@v4                                                     
-          with:                                                                                
-            name: OpenIM-Windows
-            path: OpenIM-Windows.zip                                                           
+^2.4.13' | Set-Content pubspec.yaml                                                          
+      - run: flutter pub get
+      - run: flutter build windows --release                                                 
+      - name: Package                                                                        
+        shell: pwsh                                                                          
+        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath      
+OpenIM-Windows.zip                                                                           
+      - uses: actions/upload-artifact@v4                                                     
+        with:                                                                                
+          name: OpenIM-Windows
+          path: OpenIM-Windows.zip                                                           
                   
-    build-macos:                                                                               
-      runs-on: macos-latest
-      steps:                                                                                   
-        - uses: actions/checkout@v4
-        - uses: subosito/flutter-action@v2                                                     
-          with:                                                                                
-            flutter-version: "3.27.4"                                                          
-            channel: stable                                                                    
-        - name: Fix dependencies
-          run: |                                                                               
-            sed -i '' 's/flutter_lints: \^6.0.0/flutter_lints: ^5.0.0/' pubspec.yaml           
-            sed -i '' 's/build_runner: \^2.4.15/build_runner: ^2.4.13/' pubspec.yaml           
-        - run: flutter pub get                                                                 
-        - run: flutter build macos --release                                                   
-        - name: Package                                                                        
-          run: |                                                                               
-            cd build/macos/Build/Products/Release                                              
-            zip -r OpenIM-macOS.zip openim.app                                                 
-        - uses: actions/upload-artifact@v4                                                     
-          with:                                                                                
-            name: OpenIM-macOS                                                                 
-            path: build/macos/Build/Products/Release/OpenIM-macOS.zip
+  build-macos:                                                                               
+    runs-on: macos-latest
+    steps:                                                                                   
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2                                                     
+        with:                                                                                
+          flutter-version: "3.27.4"                                                          
+          channel: stable                                                                    
+      - name: Fix dependencies
+        run: |                                                                               
+          sed -i '' 's/flutter_lints: \^6.0.0/flutter_lints: ^5.0.0/' pubspec.yaml           
+          sed -i '' 's/build_runner: \^2.4.15/build_runner: ^2.4.13/' pubspec.yaml           
+      - run: flutter pub get                                                                 
+      - run: flutter build macos --release                                                   
+      - name: Package                                                                        
+        run: |                                                                               
+          cd build/macos/Build/Products/Release                                              
+          zip -r OpenIM-macOS.zip openim.app                                                 
+      - uses: actions/upload-artifact@v4                                                     
+        with:                                                                                
+          name: OpenIM-macOS                                                                 
+          path: build/macos/Build/Products/Release/OpenIM-macOS.zip
