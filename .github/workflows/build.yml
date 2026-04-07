@@ -24,6 +24,11 @@ jobs:
           flutter create --platforms=windows .
           if ($LASTEXITCODE -ne 0) { exit 0 }
 
+      - name: Remove mobile-only dependencies
+        shell: pwsh
+        run: |
+          (Get-Content openim_common/pubspec.yaml) -replace '\s*getuiflut:.*', '' | Set-Content openim_common/pubspec.yaml -Encoding UTF8
+
       - run: flutter pub get
       - run: flutter build windows --release
 
@@ -51,6 +56,9 @@ jobs:
 
       - name: Init macOS platform
         run: flutter create --platforms=macos . || true
+
+      - name: Remove mobile-only dependencies
+        run: sed -i '' '/getuiflut:/d' openim_common/pubspec.yaml
 
       - run: flutter pub get
       - run: flutter build macos --release
