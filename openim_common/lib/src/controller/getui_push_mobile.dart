@@ -5,7 +5,7 @@ const appID = 'ovKF2KkTmC99F7luUa2T06';
 const appKey = 'bFUTJhLCkr7pfTWvJ0UCY4';
 const appSecret = '5sLKQk42zxAMUjJHWETRr7';
 
-class GetuiPushController {
+class GetuiPushImpl {
   static final GetuiPushController _instance = GetuiPushController._internal();
   factory GetuiPushController() => _instance;
 
