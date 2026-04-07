@@ -16,16 +16,13 @@ jobs:
           channel: stable
 
       - name: Fix pubspec.yaml
-        shell: python
+        shell: pwsh
         run: |
-          import re
-          with open('pubspec.yaml', 'r') as f:
-              c = f.read()
-          c = re.sub(r'flutter_lints:\s*\^6\.0\.0', 'flutter_lints: ^5.0.0', c)
-          c = re.sub(r'build_runner:\s*\^2\.4\.15', 'build_runner: ^2.4.13', c)
-          with open('pubspec.yaml', 'w') as f:
-              f.write(c)
-          print(c[:500])
+          $c = Get-Content pubspec.yaml -Raw
+          $c = $c -replace 'flutter_lints: \^6\.0\.0', 'flutter_lints: ^5.0.0'
+          $c = $c -replace 'build_runner: \^2\.4\.15', 'build_runner: ^2.4.13'
+          $c | Set-Content pubspec.yaml -NoNewline
+          Write-Host "flutter_lints line: $(Select-String 'flutter_lints' pubspec.yaml)"
 
       - run: flutter pub get
 
@@ -53,12 +50,12 @@ jobs:
       - name: Fix pubspec.yaml
         run: |
           python3 -c "
-import re
+import re, sys
 with open('pubspec.yaml') as f: c = f.read()
-c = re.sub(r'flutter_lints:\s*\^6\.0\.0', 'flutter_lints: ^5.0.0', c)
-c = re.sub(r'build_runner:\s*\^2\.4\.15', 'build_runner: ^2.4.13', c)
+c = re.sub(r'flutter_lints: \.\^6\.0\.0', 'flutter_lints: ^5.0.0', c)
+c = re.sub(r'build_runner: \.\^2\.4\.15', 'build_runner: ^2.4.13', c)
 with open('pubspec.yaml','w') as f: f.write(c)
-print('Done')
+print([l for l in c.splitlines() if 'flutter_lints' in l or 'build_runner' in l])
 "
 
       - run: flutter pub get
