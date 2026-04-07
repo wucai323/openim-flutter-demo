@@ -8,7 +8,7 @@ on:
 jobs:                                                                                        
   build-windows:
     runs-on: windows-latest
-    teps:
+    steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
