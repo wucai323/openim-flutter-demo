@@ -15,9 +15,6 @@ jobs:
         with:
           channel: stable
 
-      - name: Fix pubspec.yaml
-        run: python scripts/fix_pubspec.py
-
       - name: Enable Windows desktop
         run: flutter config --enable-windows-desktop
 
@@ -42,9 +39,6 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-
-      - name: Fix pubspec.yaml
-        run: python3 scripts/fix_pubspec.py
 
       - name: Enable macOS desktop
         run: flutter config --enable-macos-desktop
