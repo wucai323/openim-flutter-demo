@@ -9,6 +9,9 @@ import 'package:openim_common/openim_common.dart';
 
 import 'firebase_options.dart';
 
+// Conditional import for GeTui (only on mobile)
+import 'package:getuiflut/getuiflut.dart' if (dart.library.html) 'push_controller_stub.dart';
+
 enum PushType { GeTui, FCM, none }
 
 const appID = 'ovKF2KkTmC99F7luUa2T06';
@@ -18,9 +21,7 @@ const appSecret = '5sLKQk42zxAMUjJHWETRr7';
 class PushController extends GetxService {
   PushType pushType = PushType.GeTui;
 
-  /// Logs in the user with the specified alias to the push notification service.
   static void login(String alias, {void Function(String token)? onTokenRefresh}) {
-    // GeTui only works on Android/iOS
     if (PushController().pushType == PushType.GeTui && (Platform.isAndroid || Platform.isIOS)) {
       GetuiPushController()._initialize(alias, onTokenRefresh);
     } else if (PushController().pushType == PushType.FCM) {
@@ -48,7 +49,7 @@ class GetuiPushController {
 
   GetuiPushController._internal();
 
-  dynamic _getuiflut;
+  Getuiflut? _getuiflut;
 
   Future<void> _initialize(String alias, void Function(String token)? onTokenRefresh) async {
     if (!Platform.isAndroid && !Platform.isIOS) {
@@ -56,65 +57,52 @@ class GetuiPushController {
       return;
     }
 
-    try {
-      // Dynamically import getuiflut only on mobile platforms
-      final getuiModule = await import('package:getuiflut/getuiflut.dart');
-      _getuiflut = getuiModule.Getuiflut();
-      
-      await _getuiflut!.initGetuiSdk(
-        appId: appID,
-        appKey: appKey,
-        appSecret: appSecret,
-      );
+    _getuiflut = Getuiflut();
+    
+    await _getuiflut!.initGetuiSdk(
+      appId: appID,
+      appKey: appKey,
+      appSecret: appSecret,
+    );
 
-      // Get ClientID
-      String? clientId = await _getuiflut!.getClientId();
-      Logger.print("GeTui ClientID: $clientId");
-      
-      if (clientId != null && onTokenRefresh != null) {
-        onTokenRefresh(clientId);
-      }
-
-      // Bind alias
-      if (alias.isNotEmpty) {
-        await _getuiflut!.bindAlias(alias, clientId ?? '');
-        Logger.print("GeTui alias bound: $alias");
-      }
-
-      // Listen for ClientID registration
-      _getuiflut!.addEventHandler(
-        onReceiveClientId: (String clientId) {
-          Logger.print("GeTui ClientID received: $clientId");
-          if (onTokenRefresh != null) {
-            onTokenRefresh(clientId);
-          }
-        },
-        onReceiveMessageData: (Map<String, dynamic> message) {
-          Logger.print("GeTui message received: $message");
-        },
-        onNotificationMessageArrived: (Map<String, dynamic> message) {
-          Logger.print("GeTui notification arrived: $message");
-        },
-        onNotificationMessageClicked: (Map<String, dynamic> message) {
-          Logger.print("GeTui notification clicked: $message");
-        },
-      );
-    } catch (e) {
-      Logger.print("GeTui initialization failed: $e");
+    String? clientId = await _getuiflut!.getClientId();
+    Logger.print("GeTui ClientID: $clientId");
+    
+    if (clientId != null && onTokenRefresh != null) {
+      onTokenRefresh(clientId);
     }
+
+    if (alias.isNotEmpty && clientId != null) {
+      await _getuiflut!.bindAlias(alias, clientId);
+      Logger.print("GeTui alias bound: $alias");
+    }
+
+    _getuiflut!.addEventHandler(
+      onReceiveClientId: (String clientId) {
+        Logger.print("GeTui ClientID received: $clientId");
+        if (onTokenRefresh != null) {
+          onTokenRefresh(clientId);
+        }
+      },
+      onReceiveMessageData: (Map<String, dynamic> message) {
+        Logger.print("GeTui message received: $message");
+      },
+      onNotificationMessageArrived: (Map<String, dynamic> message) {
+        Logger.print("GeTui notification arrived: $message");
+      },
+      onNotificationMessageClicked: (Map<String, dynamic> message) {
+        Logger.print("GeTui notification clicked: $message");
+      },
+    );
   }
 
   Future<void> _unbindAlias() async {
     if (_getuiflut == null) return;
     
-    try {
-      String? clientId = await _getuiflut?.getClientId();
-      if (clientId != null) {
-        await _getuiflut?.unbindAlias(clientId, true);
-        Logger.print("GeTui alias unbound");
-      }
-    } catch (e) {
-      Logger.print("GeTui unbind failed: $e");
+    String? clientId = await _getuiflut?.getClientId();
+    if (clientId != null) {
+      await _getuiflut?.unbindAlias(clientId, true);
+      Logger.print("GeTui alias unbound");
     }
   }
 }
