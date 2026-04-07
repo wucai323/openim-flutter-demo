@@ -1,13 +1,16 @@
-// Stub for non-mobile platforms
-class Getuiflut {
-  Future<void> initGetuiSdk({String? appId, String? appKey, String? appSecret}) async {}
-  Future<String?> getClientId() async => null;
-  Future<void> bindAlias(String alias, String clientId) async {}
-  Future<void> unbindAlias(String clientId, bool isSelf) async {}
-  void addEventHandler({
-    Function(String)? onReceiveClientId,
-    Function(Map<String, dynamic>)? onReceiveMessageData,
-    Function(Map<String, dynamic>)? onNotificationMessageArrived,
-    Function(Map<String, dynamic>)? onNotificationMessageClicked,
-  }) {}
+import 'package:openim_common/openim_common.dart';
+
+class GetuiPushImpl {
+  static final GetuiPushImpl _instance = GetuiPushImpl._internal();
+  factory GetuiPushImpl() => _instance;
+
+  GetuiPushImpl._internal();
+
+  Future<void> initialize(String alias, void Function(String token)? onTokenRefresh) async {
+    Logger.print("GeTui not available on this platform");
+  }
+
+  Future<void> unbindAlias() async {
+    Logger.print("GeTui not available on this platform");
+  }
 }
