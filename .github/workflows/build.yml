@@ -13,16 +13,14 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.27.4"
           channel: stable
+          flutter-version: "3.29.2"
 
       - name: Fix dependencies
         shell: pwsh
         run: |
-          $content = Get-Content pubspec.yaml -Raw
-          $content = $content -replace 'flutter_lints: \^6\.0\.0', 'flutter_lints: ^5.0.0'
-          $content = $content -replace 'build_runner: \^2\.4\.15', 'build_runner: ^2.4.13'
-          Set-Content pubspec.yaml $content
+          flutter pub add dev:flutter_lints:^5.0.0 --no-example 2>$null; $true
+          flutter pub add dev:build_runner:^2.4.13 --no-example 2>$null; $true
 
       - run: flutter pub get
 
@@ -36,6 +34,7 @@ jobs:
         with:
           name: OpenIM-Windows
           path: OpenIM-Windows.zip
+          retention-days: 7
 
   build-macos:
     runs-on: macos-latest
@@ -44,21 +43,13 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.27.4"
           channel: stable
+          flutter-version: "3.29.2"
 
       - name: Fix dependencies
         run: |
-          python3 -c "
-          import re
-          with open('pubspec.yaml', 'r') as f:
-              content = f.read()
-          content = re.sub(r'flutter_lints: \^6\.0\.0', 'flutter_lints: ^5.0.0', content)
-          content = re.sub(r'build_runner: \^2\.4\.15', 'build_runner: ^2.4.13', content)
-          with open('pubspec.yaml', 'w') as f:
-              f.write(content)
-          print('Done')
-          "
+          flutter pub add dev:flutter_lints:^5.0.0 --no-example || true
+          flutter pub add dev:build_runner:^2.4.13 --no-example || true
 
       - run: flutter pub get
 
@@ -73,3 +64,4 @@ jobs:
         with:
           name: OpenIM-macOS
           path: build/macos/Build/Products/Release/OpenIM-macOS.zip
+          retention-days: 7
