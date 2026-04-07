@@ -49,8 +49,16 @@ jobs:
 
       - name: Fix dependencies
         run: |
-          sed -i '' 's/flutter_lints: ..6.0.0/flutter_lints: ^5.0.0/' pubspec.yaml
-          sed -i '' 's/build_runner: ..2.4.15/build_runner: ^2.4.13/' pubspec.yaml
+          python3 -c "
+          import re
+          with open('pubspec.yaml', 'r') as f:
+              content = f.read()
+          content = re.sub(r'flutter_lints: \^6\.0\.0', 'flutter_lints: ^5.0.0', content)
+          content = re.sub(r'build_runner: \^2\.4\.15', 'build_runner: ^2.4.13', content)
+          with open('pubspec.yaml', 'w') as f:
+              f.write(content)
+          print('Done')
+          "
 
       - run: flutter pub get
 
