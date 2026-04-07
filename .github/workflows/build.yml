@@ -22,10 +22,8 @@ jobs:
           $c = $c -replace 'flutter_lints: \^6\.0\.0', 'flutter_lints: ^5.0.0'
           $c = $c -replace 'build_runner: \^2\.4\.15', 'build_runner: ^2.4.13'
           $c | Set-Content pubspec.yaml -NoNewline
-          Write-Host "flutter_lints line: $(Select-String 'flutter_lints' pubspec.yaml)"
 
       - run: flutter pub get
-
       - run: flutter build windows --release
 
       - name: Package
@@ -49,17 +47,11 @@ jobs:
 
       - name: Fix pubspec.yaml
         run: |
-          python3 -c "
-import re, sys
-with open('pubspec.yaml') as f: c = f.read()
-c = re.sub(r'flutter_lints: \.\^6\.0\.0', 'flutter_lints: ^5.0.0', c)
-c = re.sub(r'build_runner: \.\^2\.4\.15', 'build_runner: ^2.4.13', c)
-with open('pubspec.yaml','w') as f: f.write(c)
-print([l for l in c.splitlines() if 'flutter_lints' in l or 'build_runner' in l])
-"
+          sed -i.bak 's/flutter_lints: .6.0.0/flutter_lints: ^5.0.0/' pubspec.yaml
+          sed -i.bak 's/build_runner: .2.4.15/build_runner: ^2.4.13/' pubspec.yaml
+          grep -E 'flutter_lints|build_runner' pubspec.yaml
 
       - run: flutter pub get
-
       - run: flutter build macos --release
 
       - name: Package
