@@ -29,6 +29,12 @@ android {
         multiDexEnabled true
 
         ndk { abiFilters "arm64-v8a", "x86_64" }
+
+        manifestPlaceholders = [
+            GETUI_APP_ID: "ovKF2KkTmC99F7luUa2T06",
+            GETUI_APP_KEY: "bFUTJhLCkr7pfTWvJ0UCY4",
+            GETUI_APP_SECRET: "5sLKQk42zxAMUjJHWETRr7"
+        ]
     }
 
     signingConfigs {
