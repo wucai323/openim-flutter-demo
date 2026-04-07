@@ -19,7 +19,7 @@ jobs:
         run: |  
           (Get-Content pubspec.yaml) -replace 'flutter_lints: \^6.0.0', 'flutter_lints: 
 ^5.0.0' | Set-Content pubspec.yaml                                                           
-            (Get-Content pubspec.yaml) -replace 'build_runner: \^2.4.15', 'build_runner: 
+          (Get-Content pubspec.yaml) -replace 'build_runner: \^2.4.15', 'build_runner: 
 ^2.4.13' | Set-Content pubspec.yaml                                                          
       - run: flutter pub get
       - run: flutter build windows --release                                                 
