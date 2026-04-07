@@ -62,7 +62,7 @@ dependencies:
   local_auth: ^2.2.0
   gesture_password_widget: ^2.0.1
   sound_mode: ^3.1.1
-  device_info_plus: ^11.3.0
+  device_info_plus: ^12.3.0
   extended_text_field: ^16.0.0
   extended_text: ^15.0.2
   animate_do: ^4.2.0
