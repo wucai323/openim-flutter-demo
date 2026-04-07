@@ -16,15 +16,7 @@ jobs:
           channel: stable
 
       - name: Fix pubspec.yaml
-        run: |
-          python -c "
-import re
-with open('pubspec.yaml', encoding='utf-8') as f: c = f.read()
-c = re.sub(r'flutter_lints: ..6.0.0', 'flutter_lints: ^5.0.0', c)
-c = re.sub(r'build_runner: ..2.4.15', 'build_runner: ^2.4.13', c)
-with open('pubspec.yaml', 'w', encoding='utf-8') as f: f.write(c)
-print([l for l in c.splitlines() if 'flutter_lints' in l or 'build_runner' in l])
-"
+        run: python scripts/fix_pubspec.py
 
       - name: Enable Windows desktop
         run: flutter config --enable-windows-desktop
@@ -52,11 +44,7 @@ print([l for l in c.splitlines() if 'flutter_lints' in l or 'build_runner' in l]
           channel: stable
 
       - name: Fix pubspec.yaml
-        run: |
-          sed -i.bak 's/flutter_lints: .6.0.0/flutter_lints: ^5.0.0/' pubspec.yaml
-          sed -i.bak 's/build_runner: .2.4.15/build_runner: ^2.4.13/' pubspec.yaml
-          sed -i.bak 's/livekit_client: .2.5.0/livekit_client: ^2.5.1/' pubspec.yaml
-          grep -E 'flutter_lints|build_runner|livekit' pubspec.yaml
+        run: python3 scripts/fix_pubspec.py
 
       - name: Enable macOS desktop
         run: flutter config --enable-macos-desktop
