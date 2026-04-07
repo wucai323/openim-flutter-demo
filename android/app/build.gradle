@@ -74,6 +74,10 @@ dependencies {
     // Firebase
     implementation platform("com.google.firebase:firebase-bom:33.7.0")
     implementation "com.google.firebase:firebase-messaging"
+
+    // GeTui Push SDK
+    implementation "com.getui:gtsdk:3.2.13.0"
+    implementation "com.getui:gtc:3.1.10.0"
 }
 
 static def buildTime() {
