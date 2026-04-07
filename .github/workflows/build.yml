@@ -14,13 +14,18 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: "3.29.2"
 
-      - name: Fix dependencies
-        shell: pwsh
+      - name: Fix pubspec.yaml
+        shell: python
         run: |
-          flutter pub add dev:flutter_lints:^5.0.0 --no-example 2>$null; $true
-          flutter pub add dev:build_runner:^2.4.13 --no-example 2>$null; $true
+          import re
+          with open('pubspec.yaml', 'r') as f:
+              c = f.read()
+          c = re.sub(r'flutter_lints:\s*\^6\.0\.0', 'flutter_lints: ^5.0.0', c)
+          c = re.sub(r'build_runner:\s*\^2\.4\.15', 'build_runner: ^2.4.13', c)
+          with open('pubspec.yaml', 'w') as f:
+              f.write(c)
+          print(c[:500])
 
       - run: flutter pub get
 
@@ -44,12 +49,17 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: "3.29.2"
 
-      - name: Fix dependencies
+      - name: Fix pubspec.yaml
         run: |
-          flutter pub add dev:flutter_lints:^5.0.0 --no-example || true
-          flutter pub add dev:build_runner:^2.4.13 --no-example || true
+          python3 -c "
+import re
+with open('pubspec.yaml') as f: c = f.read()
+c = re.sub(r'flutter_lints:\s*\^6\.0\.0', 'flutter_lints: ^5.0.0', c)
+c = re.sub(r'build_runner:\s*\^2\.4\.15', 'build_runner: ^2.4.13', c)
+with open('pubspec.yaml','w') as f: f.write(c)
+print('Done')
+"
 
       - run: flutter pub get
 
